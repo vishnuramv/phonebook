@@ -35,3 +35,8 @@ export const contactStore = new Store({
         },
     ],
 })
+
+export const userStore = new Store({
+    isLoggedIn: false,
+    user: null,
+})

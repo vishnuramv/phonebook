@@ -12,11 +12,8 @@ const ContactList = () => {
                 {
                     contacts.map((contact) => (
                         <Fragment key={contact?.id}>
-                         <ContactItem id={contact?.id} name={contact?.name} number={contact?.number} imgUrl={contact?.img} />
+                            <ContactItem id={contact?.id} name={contact?.name} number={contact?.number} imgUrl={contact?.img} />
                             <Divider /> 
-                            {/* // console.log(contact) */}
-                        {/* // <h1>{contact.name}</h1> */}
-
                         </Fragment>
                     ))
                 }
