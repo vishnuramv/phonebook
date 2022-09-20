@@ -17,13 +17,13 @@ const ContactItem = ({ id, imgUrl, name, number }) => {
                 </>
             }
         >
-            {/* <ListItemAvatar>
+            <ListItemAvatar>
                 <Avatar src={imgUrl && imgUrl} alt={name} />
             </ListItemAvatar>
             <ListItemText
                 primary={name}
                 secondary={number}
-            /> */}
+            />
         </ListItem>
     )
 }
