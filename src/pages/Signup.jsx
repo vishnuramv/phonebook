@@ -1,15 +1,32 @@
+import '../styles/login.css';
 import { Container, Button, TextField } from "@mui/material"
-import { useState } from "react";
-import { Link } from "react-router-dom"
-import "../styles/login.css"
-const Login = () => {
+import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { signup } from '../apiClient/userApi';
+
+const Signup = () => {
     const [userDetail, setUserDetail] = useState({
         email: '',
+        name: '',
         password: ''
     });
+    const signupHandle = () => {
+        console.log(userDetail);
+        signup(userDetail).then(res => {
+            console.log(res);
+        }).catch(err => console.log(err));
+    }
     return <div className="login">
         <div className="login__container">
-            <h1>Login</h1>
+            <h1>Signup</h1>
+            <TextField
+                className="login__input"
+                required
+                label="Name"
+                value={userDetail.name}
+                onChange={(e) => setUserDetail({ ...userDetail, name: e.target.value })}
+                variant="standard"
+            />
             <TextField
                 className="login__input"
                 required
@@ -28,10 +45,10 @@ const Login = () => {
                 autoComplete="current-password"
                 variant="standard"
             />
-            <p>Don't have an account? <Link to="/signup">Sign up</Link></p>
-            <Button variant="outlined">Outlined</Button>
+            <p>Already have an account? <Link to="/">Login</Link></p>
+            <Button variant="outlined" onClick={signupHandle}>Sign up</Button>
         </div>
     </div >
 }
 
-export default Login
+export default Signup

@@ -4,6 +4,7 @@ import './App.css';
 import ContactList from './components/ContactList';
 import Header from './components/Header';
 import Login from './pages/Login';
+import Signup from './pages/Signup';
 import { userStore } from './store';
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
           !isLoggedIn ? (
             <>
               <Route path="/" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
             </>
           ) : (
             <>

@@ -1,0 +1,1 @@
+export const BASE_URL = "https://amsavarthan-express-crud-sample-4vxgrv67gr4fj67p-3000.githubpreview.dev/api";
