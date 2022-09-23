@@ -1,22 +1,21 @@
-import React, { Fragment, useState } from 'react'
-import { Box, List, Divider, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, TextField } from "@mui/material"
+import React, { Fragment, useEffect, useState } from 'react'
+import { Box, List, Divider, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, TextField, Typography } from "@mui/material"
 import ContactItem from './ContactItem'
 import { contactStore } from '../store'
-
-const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 400,
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
-    boxShadow: 24,
-    p: 4,
-};
+import { deleteContact, editContact, getContact } from '../apiClient/contactApi';
 
 const DeleteDialog = ({ open, state, contact }) => {
     const handleClose = () => state(false);
+    const handleDelete = () => {
+        deleteContact(contact.id).then(res => {
+
+            contactStore.update(s => {
+                const temp = s.contacts.filter((val) => val._id !== contact.id)
+                s.contacts = [...temp]
+            })
+            handleClose()
+        })
+    }
     return <Dialog
         open={open}
         onClose={handleClose}
@@ -33,7 +32,7 @@ const DeleteDialog = ({ open, state, contact }) => {
         </DialogContent>
         <DialogActions>
             <Button onClick={handleClose}>Cancel</Button>
-            <Button onClick={handleClose} autoFocus>
+            <Button onClick={handleDelete} autoFocus>
                 Delete
             </Button>
         </DialogActions>
@@ -42,6 +41,18 @@ const DeleteDialog = ({ open, state, contact }) => {
 
 const EditDialog = ({ open, state, contact, setContact }) => {
     const handleClose = () => state(false);
+    const handleEdit = () => {
+        editContact(contact).then(res => {
+
+            contactStore.update(s => {
+                const ind = s.contacts.findIndex((val) => val.id === res.id)
+                const temp = [...s.contacts]
+                temp[ind] = res
+                s.contacts = [...temp]
+            })
+            handleClose()
+        })
+    }
     return <Dialog
         open={open}
         onClose={handleClose}
@@ -69,16 +80,16 @@ const EditDialog = ({ open, state, contact, setContact }) => {
                     required
                     label="Phone Number"
                     type="number"
-                    defaultValue={contact?.number}
-                    value={contact.number}
-                    onChange={(e) => setContact({ ...contact, number: e.target.value })}
+                    defaultValue={contact?.phone}
+                    value={contact.phone}
+                    onChange={(e) => setContact({ ...contact, phone: e.target.value })}
                     variant="standard"
                 />
             </DialogContentText>
         </DialogContent>
         <DialogActions>
             <Button onClick={handleClose}>Cancel</Button>
-            <Button onClick={handleClose} autoFocus>
+            <Button onClick={handleEdit} autoFocus>
                 Edit
             </Button>
         </DialogActions>
@@ -88,27 +99,35 @@ const EditDialog = ({ open, state, contact, setContact }) => {
 
 const ContactList = () => {
     const contacts = contactStore.useState(s => s.contacts);
-    const [contactDetail, setContactDetail] = useState({
-        id: '',
-        name: '',
-        number: ''
-    });
+    const [contactDetail, setContactDetail] = useState({});
     const [openDelete, setOpenDelete] = useState(false);
     const handleOpenDelete = () => setOpenDelete(true);
     const [openEdit, setOpenEdit] = useState(false);
     const handleOpenEdit = () => setOpenEdit(true);
 
     console.log(contacts)
+    useEffect(() => {
+        getContact().then(res => {
+            contactStore.update(s => {
+                s.contacts = res
+            })
+        }).catch(err => {
+            console.log(err)
+        })
+    }, [contacts])
+
     return (
         <Box boxShadow={5} borderRadius={1}>
             <List>
-                {
-                    contacts.map((contact) => (
-                        <Fragment key={contact?.id}>
-                            <ContactItem id={contact?.id} name={contact?.name} number={contact?.number} onOpenDelete={handleOpenDelete} onOpenEdit={handleOpenEdit} setContact={setContactDetail} />
+                {contacts.length !== 0 ?
+                    (contacts.map((contact) => (
+                        <Fragment key={contact?._id}>
+                            <ContactItem id={contact?._id} name={contact?.name} phone={contact?.phone} onOpenDelete={handleOpenDelete} onOpenEdit={handleOpenEdit} setContact={setContactDetail} />
                             <Divider />
                         </Fragment>
-                    ))
+                    ))) : (
+                        <Typography variant='h6' align='center'>No contacts found</Typography>
+                    )
                 }
                 <DeleteDialog open={openDelete} state={setOpenDelete} contact={contactDetail} />
                 <EditDialog open={openEdit} state={setOpenEdit} contact={contactDetail} setContact={setContactDetail} />

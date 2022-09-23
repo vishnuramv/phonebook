@@ -2,7 +2,7 @@ import React from 'react'
 import { ListItem, ListItemAvatar, ListItemText, Avatar, IconButton } from "@mui/material"
 import { Delete, Edit } from "@mui/icons-material"
 
-const ContactItem = ({ id, name, number, onOpenDelete, onOpenEdit, setContact }) => {
+const ContactItem = ({ id, name, phone, onOpenDelete, onOpenEdit, setContact }) => {
     console.log("name")
     return (
         <ListItem
@@ -10,13 +10,13 @@ const ContactItem = ({ id, name, number, onOpenDelete, onOpenEdit, setContact })
                 <>
                     <IconButton edge="end" aria-label="edit" onClick={() => {
                         onOpenEdit()
-                        setContact({ id, name, number })
+                        setContact({ id, name, phone })
                     }}>
                         <Edit />
                     </IconButton>
                     <IconButton edge="end" aria-label="delete" onClick={() => {
                         onOpenDelete()
-                        setContact({ id, name, number })
+                        setContact({ id, name, phone })
                     }}>
                         <Delete />
                     </IconButton>
@@ -24,11 +24,11 @@ const ContactItem = ({ id, name, number, onOpenDelete, onOpenEdit, setContact })
             }
         >
             <ListItemAvatar>
-                <Avatar>{name[0]}</Avatar>
+                <Avatar>{name[0].toUpperCase()}</Avatar>
             </ListItemAvatar>
             <ListItemText
                 primary={name}
-                secondary={number}
+                secondary={phone}
             />
         </ListItem>
     )

@@ -1,8 +1,9 @@
 import '../styles/login.css';
 import { Container, Button, TextField } from "@mui/material"
-import { Link } from 'react-router-dom';
+import { Link, redirect } from 'react-router-dom';
 import { useState } from 'react';
 import { signup } from '../apiClient/userApi';
+import { userStore } from '../store';
 
 const Signup = () => {
     const [userDetail, setUserDetail] = useState({
@@ -14,6 +15,12 @@ const Signup = () => {
         console.log(userDetail);
         signup(userDetail).then(res => {
             console.log(res);
+            userStore.update(s => {
+                s.isLoggedIn = true
+                s.token = res
+            })
+            // redirect("/")
+            window.location.href = '/'
         }).catch(err => console.log(err));
     }
     return <div className="login">

@@ -1,5 +1,7 @@
 import { Box } from '@mui/material';
+import { useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
+import { getUser } from './apiClient/userApi';
 import './App.css';
 import ContactList from './components/ContactList';
 import Header from './components/Header';
@@ -9,6 +11,24 @@ import { userStore } from './store';
 
 function App() {
   const isLoggedIn = userStore.useState(s => s.isLoggedIn);
+  useEffect(() => {
+    const token = localStorage.getItem("token")
+    if (!!token) {
+      userStore.update(s => {
+        s.isLoggedIn = true
+        s.token = token
+      })
+      getUser().then(res => {
+        userStore.update(s => {
+          s.user = res
+        })
+        console.log(res)
+      }).catch(err => {
+        console.log(err)
+      })
+    }
+  }, [])
+
 
   return (
     <div className="App">
